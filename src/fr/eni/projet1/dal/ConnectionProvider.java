@@ -1,0 +1,50 @@
+package fr.eni.projet1.dal;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
+
+public class ConnectionProvider {
+	
+	
+private static DataSource dataSource;
+	
+	/**
+	 * Au chargement de la classe, la DataSource est recherchée dans l'arbre JNDI
+	 */
+
+
+	static
+	{
+		Context context;
+		try {
+			
+			context = new InitialContext();
+			ConnectionProvider.dataSource = (DataSource)context.lookup("java:comp/env/jdbc/pool_cnx");
+		} catch (NamingException e) {
+			e.printStackTrace();
+			
+			throw new RuntimeException("Impossible de se connecter  à  la base de donnée");
+		}
+	}
+	
+	/**
+	 * méthode  qui retourne une connection opérationnelle issue du pool de connexion
+	 * vers la base de données ENCHERES. 
+	 * @return
+	 * @throws SQLException
+	 */
+	
+	
+	public static Connection getConnection() throws SQLException
+	{
+		return dataSource.getConnection();
+		
+	}
+
+	
+}
